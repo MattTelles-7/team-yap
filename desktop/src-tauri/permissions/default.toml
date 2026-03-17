@@ -4,6 +4,7 @@ description = "Default permissions for Team Yap desktop commands."
 commands.allow = [
   "load_settings",
   "save_server_url",
+  "save_theme",
   "login",
   "resume_session",
   "list_messages",

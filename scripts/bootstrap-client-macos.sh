@@ -53,7 +53,8 @@ mkdir -p "$CONFIG_DIR"
 cat >"$CONFIG_DIR/settings.json" <<EOF
 {
   "server_url": "$SERVER_URL",
-  "auth_token": null
+  "auth_token": null,
+  "theme": "dark"
 }
 EOF
 

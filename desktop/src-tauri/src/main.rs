@@ -7,11 +7,25 @@ use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 
 const SETTINGS_FILE_NAME: &str = "settings.json";
+const DEFAULT_SERVER_URL: &str = "http://127.0.0.1:8080";
+const DEFAULT_THEME: &str = "dark";
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+fn default_server_url() -> String {
+    DEFAULT_SERVER_URL.into()
+}
+
+fn default_theme() -> String {
+    DEFAULT_THEME.into()
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 struct AppSettings {
+    #[serde(default = "default_server_url")]
     server_url: String,
+    #[serde(default)]
     auth_token: Option<String>,
+    #[serde(default = "default_theme")]
+    theme: String,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -42,6 +56,7 @@ struct ApiMessage {
 struct SettingsPayload {
     server_url: String,
     has_saved_session: bool,
+    theme: String,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -116,6 +131,14 @@ fn normalize_server_url(raw: &str) -> Result<String, String> {
     Ok(trimmed)
 }
 
+fn normalize_theme(raw: &str) -> Result<String, String> {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "dark" => Ok("dark".into()),
+        "light" => Ok("light".into()),
+        _ => Err("Theme must be either dark or light.".into()),
+    }
+}
+
 fn config_dir(app: &AppHandle) -> Result<PathBuf, String> {
     let dir = app
         .path()
@@ -133,16 +156,17 @@ fn settings_path(app: &AppHandle) -> Result<PathBuf, String> {
 fn read_settings(app: &AppHandle) -> Result<AppSettings, String> {
     let path = settings_path(app)?;
     if !path.exists() {
-        return Ok(AppSettings {
-            server_url: "http://127.0.0.1:8080".into(),
-            auth_token: None,
-        });
+        return Ok(AppSettings::default());
     }
 
     let raw = fs::read_to_string(&path)
         .map_err(|error| format!("Could not read settings from {}: {error}", path.display()))?;
-    let settings: AppSettings =
+    let mut settings: AppSettings =
         serde_json::from_str(&raw).map_err(|error| format!("Invalid settings file: {error}"))?;
+    if settings.server_url.trim().is_empty() {
+        settings.server_url = default_server_url();
+    }
+    settings.theme = normalize_theme(&settings.theme).unwrap_or_else(|_| default_theme());
     Ok(settings)
 }
 
@@ -158,6 +182,7 @@ fn public_settings(settings: &AppSettings) -> SettingsPayload {
     SettingsPayload {
         server_url: settings.server_url.clone(),
         has_saved_session: settings.auth_token.is_some(),
+        theme: settings.theme.clone(),
     }
 }
 
@@ -202,6 +227,14 @@ fn save_server_url(app: AppHandle, server_url: String) -> Result<SettingsPayload
 }
 
 #[tauri::command]
+fn save_theme(app: AppHandle, theme: String) -> Result<SettingsPayload, String> {
+    let mut settings = read_settings(&app)?;
+    settings.theme = normalize_theme(&theme)?;
+    write_settings(&app, &settings)?;
+    Ok(public_settings(&settings))
+}
+
+#[tauri::command]
 async fn login(
     app: AppHandle,
     server_url: String,
@@ -234,10 +267,9 @@ async fn login(
         .map_err(|error| format!("Could not parse the login response: {error}"))?;
 
     let user = UserPayload::from(payload.user);
-    let settings = AppSettings {
-        server_url: normalized_server_url,
-        auth_token: Some(payload.token),
-    };
+    let mut settings = read_settings(&app)?;
+    settings.server_url = normalized_server_url;
+    settings.auth_token = Some(payload.token);
     write_settings(&app, &settings)?;
     Ok(session_payload(&settings, Some(user)))
 }
@@ -351,6 +383,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             load_settings,
             save_server_url,
+            save_theme,
             login,
             resume_session,
             list_messages,
@@ -359,4 +392,14 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running Team Yap");
+}
+
+impl Default for AppSettings {
+    fn default() -> Self {
+        Self {
+            server_url: default_server_url(),
+            auth_token: None,
+            theme: default_theme(),
+        }
+    }
 }
