@@ -32,6 +32,7 @@ Audit whether the current task and repo process are following the standing order
 
 - If the next run starts fresh, can it recover from `docs/PROGRESS.md` and `docs/CHECKPOINT_HISTORY.md` without rereading the whole thread?
 - Are the next small bets, open risks, and validation commands written down?
+- Does `docs/PROGRESS.md` describe the current state accurately, or is it still using stale future-tense wording for work that already finished?
 
 ### Failure Handling
 

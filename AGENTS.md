@@ -17,6 +17,7 @@
 - Keep the one-line bootstrap and one-line uninstall commands working and documented whenever related code changes.
 - Do not leave setup or uninstall docs as placeholders. They must match the real scripts, commands, and paths in the repo.
 - Keep [docs/PROGRESS.md](docs/PROGRESS.md) current after each user-directed change. It is the restart file for the next run.
+- When a checkpoint completes, rewrite [docs/PROGRESS.md](docs/PROGRESS.md) so it describes the current state rather than stale future or in-progress wording.
 - Append meaningful milestones to [docs/CHECKPOINT_HISTORY.md](docs/CHECKPOINT_HISTORY.md) with the date, the checkpoint summary, the validations run, and any remaining risk.
 - Use small bets. Break larger requests into checkpoints that can be validated before moving to the next change.
 - Before risky multi-file work, record the intended checkpoint and validation plan in [docs/PROGRESS.md](docs/PROGRESS.md).

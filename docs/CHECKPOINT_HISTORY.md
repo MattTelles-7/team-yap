@@ -76,3 +76,21 @@ Open risk at that point:
 
 - Raw GitHub one-liners still require these local changes to be pushed before the remote copy-and-paste commands can use them.
 - Windows PowerShell runtime validation and full packaged installer builds are still pending on native target machines.
+
+## 2026-03-17 Checkpoint 5
+
+Summary:
+
+- Re-reviewed `AGENTS.md`, `docs/PROGRESS.md`, `docs/CHECKPOINT_HISTORY.md`, `README.md`, `docs/INSTALL_DESKTOP.md`, `docs/DEPLOY_PROXMOX.md`, `docs/OPERATIONS.md`, and `agents/THREAD_CONTEXT_AUDITOR.md` after multi-agent work.
+- Fixed stale wording in `docs/PROGRESS.md` so the restart file now describes the current workflow artifacts as already present rather than still being added.
+- Added a standing-order reminder that completed checkpoints must update `docs/PROGRESS.md` to current-state wording.
+
+Validation:
+
+- `git status --short`
+- manual consistency review of the repo rules, checkpoint files, audit prompt, and user-facing docs
+
+Open risk at that point:
+
+- Raw GitHub one-liners still depend on the pushed branch contents.
+- Windows PowerShell runtime validation and full packaged installer builds are still pending on native target machines.

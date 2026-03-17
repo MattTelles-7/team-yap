@@ -23,11 +23,12 @@ Last updated: 2026-03-17
 
 ## Active Checkpoint
 
-- Rules file expanded to cover restart files, checkpoint history, small bets, exact error capture, and security/logging boundaries.
+- Rules file now covers restart files, checkpoint history, small bets, exact error capture, and security/logging boundaries.
 - Rules file now explicitly requires every new repo task to read `AGENTS.md`, `docs/PROGRESS.md`, and `docs/CHECKPOINT_HISTORY.md` before planning or editing.
-- Progress checkpoint docs are being added so future runs can restart without rereading the full conversation.
-- A reusable subagent prompt is being added to audit workflow practice against the supervision guidance from the transcript.
+- Progress checkpoint docs are in place so future runs can restart without rereading the full conversation.
+- A reusable subagent prompt exists to audit workflow practice against the supervision guidance from the transcript.
 - These checkpoint files now need to stay current for every future user-directed change.
+- The current repo consistency audit confirmed the referenced workflow files are present. The current uncommitted changes are the checkpoint-maintenance edits from this audit.
 
 ## Next Small Bets
 
