@@ -10,6 +10,66 @@ This guide covers:
 
 The desktop client lives in `desktop/src-tauri` and talks to the Team Yap server over HTTP. Node.js is not required for this repo because the frontend is static.
 
+## One-Line Client Startup
+
+These are the fastest source-based client startup commands.
+
+They:
+
+- download the repo into a local bootstrap folder
+- install the required local toolchain
+- write the desktop `settings.json` with the server URL you choose
+- launch the app with `cargo tauri dev`
+
+### macOS One-Liner
+
+Paste this into Terminal:
+
+```bash
+TEAM_YAP_SERVER_URL="https://yap.example.com" bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-macos.sh)"
+```
+
+What it uses:
+
+- work directory: `~/team-yap-client`
+- settings file: `~/Library/Application Support/com.teamyap.desktop/settings.json`
+
+Important macOS caveat:
+
+- if Xcode Command Line Tools are not installed yet, the script triggers the Apple installer and exits
+- after the Apple installer finishes, rerun the exact same one-liner once
+
+If your server is local instead of remote, use:
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-macos.sh)"
+```
+
+### Windows One-Liner
+
+Paste this into PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -Command "$env:TEAM_YAP_SERVER_URL='https://yap.example.com'; irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-windows.ps1 | iex"
+```
+
+What it uses:
+
+- work directory: `%USERPROFILE%\team-yap-client`
+- settings file: `%APPDATA%\com.teamyap.desktop\settings.json`
+
+If your server is local instead of remote, use:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -Command "irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-windows.ps1 | iex"
+```
+
+Important Windows caveats:
+
+- the first run installs Rust, WebView2, and Visual Studio Build Tools if they are missing
+- Visual Studio Build Tools installation can take several minutes
+- you may see UAC prompts during the bootstrap
+
 ## What The Desktop App Does
 
 The packaged desktop app:
@@ -25,6 +85,8 @@ The settings file is named `settings.json`.
 ## macOS
 
 ### Prerequisites
+
+If you want the shortest path, use the one-line command above.
 
 Install the macOS dependencies first:
 
@@ -60,6 +122,14 @@ python3 --version
 ```
 
 ### Run In Development On macOS
+
+Fastest path:
+
+```bash
+TEAM_YAP_SERVER_URL="https://yap.example.com" bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-macos.sh)"
+```
+
+Manual path:
 
 Open Terminal in the repo root and start the server:
 
@@ -148,6 +218,8 @@ That file stores:
 
 ### Prerequisites
 
+If you want the shortest path, use the one-line command above.
+
 Install the Windows dependencies first:
 
 1. Install Microsoft C++ Build Tools and enable `Desktop development with C++`.
@@ -184,6 +256,14 @@ py -3 --version
 ```
 
 ### Run In Development On Windows
+
+Fastest path:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -Command "$env:TEAM_YAP_SERVER_URL='https://yap.example.com'; irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-windows.ps1 | iex"
+```
+
+Manual path:
 
 Open PowerShell in the repo root and start the server:
 

@@ -2,9 +2,40 @@
 
 This guide documents the recommended production path for Team Yap on a Proxmox-hosted machine.
 
+## One-Line Debian Bootstrap
+
+On a fresh Debian VM, paste this one line as `root` or through `sudo`:
+
+```bash
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-server-debian.sh)"
+```
+
+That command:
+
+- installs Docker Engine and Docker Compose
+- clones the repo into `/opt/team-yap`
+- creates `/opt/team-yap/data` and `/opt/team-yap/backups`
+- writes `/opt/team-yap/.env`
+- initializes the SQLite database
+- creates the first admin if one does not already exist
+- starts the Team Yap server
+- prints the health URL and the initial admin password if it had to generate one
+
+Optional custom admin password example:
+
+```bash
+sudo TEAM_YAP_ADMIN_PASSWORD='ChangeThisNow123' bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-server-debian.sh)"
+```
+
+Optional custom published port example:
+
+```bash
+sudo TEAM_YAP_PORT='8090' bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-server-debian.sh)"
+```
+
 ## Recommended Deployment Target
 
-Use a small Ubuntu VM on Proxmox, not an LXC container.
+Use a small Debian VM on Proxmox, not an LXC container.
 
 Why the VM path is recommended:
 
@@ -31,9 +62,9 @@ The app is lightweight. Disk usage is mostly:
 
 Use:
 
-- Ubuntu Server 24.04 LTS
+- Debian 12 Bookworm
 
-This guide assumes Ubuntu 24.04 throughout.
+This guide assumes Debian 12 throughout.
 
 ## Network And Port Model
 
@@ -60,12 +91,12 @@ Current server-side caveats:
 
 Create a new VM with:
 
-- Ubuntu Server 24.04 LTS ISO
+- Debian 12 ISO
 - VirtIO disk and NIC if that is already your Proxmox standard
 - the sizing listed above
 - a static DHCP reservation or static IP you can rely on
 
-Finish the Ubuntu install and confirm you can SSH into the VM.
+Finish the Debian install and confirm you can SSH into the VM.
 
 ## 2. Install Base Packages
 
@@ -81,7 +112,7 @@ sudo apt install -y ca-certificates curl git sqlite3
 
 ## 3. Install Docker Engine And Docker Compose
 
-This follows Docker’s official Ubuntu repository flow.
+This follows Docker’s official Debian repository flow.
 
 Remove conflicting packages if this VM already had older Docker packages:
 
@@ -93,15 +124,9 @@ Add Docker’s repository:
 
 ```bash
 sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
-sudo tee /etc/apt/sources.list.d/docker.sources >/dev/null <<'EOF'
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: noble
-Components: stable
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian bookworm stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 sudo apt update
 ```
 

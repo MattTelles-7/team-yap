@@ -40,6 +40,10 @@ The current build is intentionally narrow: users sign in from the desktop app, r
 │   ├── DEPLOY_PROXMOX.md
 │   ├── INSTALL_DESKTOP.md
 │   └── OPERATIONS.md
+├── scripts/
+│   ├── bootstrap-client-macos.sh
+│   ├── bootstrap-client-windows.ps1
+│   └── bootstrap-server-debian.sh
 ├── .env.example
 └── docker-compose.yml
 ```
@@ -52,7 +56,47 @@ The current build is intentionally narrow: users sign in from the desktop app, r
 - Packaging: native Tauri bundles
   - macOS: `.app` bundle and `.dmg`
   - Windows: `.msi` and NSIS setup `.exe`
-- Deployment: Docker Engine + Docker Compose on an Ubuntu VM
+- Deployment: Docker Engine + Docker Compose on a Debian 12 VM
+
+## One-Line Setup
+
+Fastest server bootstrap on a fresh Debian VM:
+
+```bash
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-server-debian.sh)"
+```
+
+That command:
+
+- installs Docker Engine and Docker Compose
+- clones the repo into `/opt/team-yap`
+- writes `.env`
+- initializes the SQLite database
+- creates the first admin if one does not already exist
+- starts the stack
+
+If you do not pass `TEAM_YAP_ADMIN_PASSWORD`, the script generates one and prints it at the end.
+
+Fastest macOS client bootstrap against a remote server:
+
+```bash
+TEAM_YAP_SERVER_URL="https://yap.example.com" bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-macos.sh)"
+```
+
+Fastest Windows client bootstrap against a remote server:
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -Command "$env:TEAM_YAP_SERVER_URL='https://yap.example.com'; irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-windows.ps1 | iex"
+```
+
+The desktop bootstrap commands:
+
+- download the repo into `~/team-yap-client` or `%USERPROFILE%\team-yap-client`
+- install the required local toolchain
+- prewrite `settings.json` with the server URL you provide
+- launch the desktop app with `cargo tauri dev`
+
+They are the fastest source-based startup path. For packaged installers and manual build steps, use the desktop guide below.
 
 ## Local Development Quick Start
 
@@ -102,11 +146,11 @@ The desktop app defaults to `http://127.0.0.1:8080`.
 
 ## Desktop Install Instructions
 
-Full desktop development, packaging, and end-user install steps are in [`docs/INSTALL_DESKTOP.md`](docs/INSTALL_DESKTOP.md).
+Full desktop development, packaging, end-user install steps, and one-line client commands are in [`docs/INSTALL_DESKTOP.md`](docs/INSTALL_DESKTOP.md).
 
 ## Proxmox Deployment Instructions
 
-The recommended server deployment path is documented in [`docs/DEPLOY_PROXMOX.md`](docs/DEPLOY_PROXMOX.md).
+The recommended Proxmox deployment path and one-line Debian bootstrap command are documented in [`docs/DEPLOY_PROXMOX.md`](docs/DEPLOY_PROXMOX.md).
 
 ## Environment Variables Overview
 

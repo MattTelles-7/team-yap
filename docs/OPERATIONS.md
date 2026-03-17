@@ -17,6 +17,8 @@ backend/team_yap/manage.py
 
 The bootstrap method is the `bootstrap-admin` CLI command.
 
+For a fresh Debian deployment, the one-line server bootstrap in [`docs/DEPLOY_PROXMOX.md`](DEPLOY_PROXMOX.md) wraps this command automatically.
+
 It is intended for the very first administrator only:
 
 ```bash
