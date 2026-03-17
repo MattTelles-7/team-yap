@@ -109,6 +109,7 @@ try {
   @{
     server_url = $serverUrl
     auth_token = $null
+    theme = 'dark'
   } | ConvertTo-Json | Set-Content -Path (Join-Path $configDir 'settings.json') -Encoding UTF8
 
   Set-Location (Join-Path $workDir 'desktop\src-tauri')

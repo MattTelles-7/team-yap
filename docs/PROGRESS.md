@@ -23,6 +23,7 @@ Last updated: 2026-03-17
 
 ## Active Checkpoint
 
+- In progress: add a dark desktop theme as the default, persist a local theme preference, expose a theme toggle in the desktop settings UI, and refresh the desktop icon set to a transparent liquid-glass style.
 - Rules file now covers restart files, checkpoint history, small bets, exact error capture, and security/logging boundaries.
 - Rules file now explicitly requires every new repo task to read `AGENTS.md`, `docs/PROGRESS.md`, and `docs/CHECKPOINT_HISTORY.md` before planning or editing.
 - Progress checkpoint docs are in place so future runs can restart without rereading the full conversation.
@@ -32,6 +33,9 @@ Last updated: 2026-03-17
 
 ## Next Small Bets
 
+- Add the new persisted theme field to desktop settings, bootstrap scripts, and Tauri commands.
+- Update the desktop HTML, CSS, and JavaScript to default to dark mode and expose a saved theme toggle.
+- Regenerate the desktop icon assets with a transparent liquid-glass design and verify the bundle inputs still exist.
 - Keep README and docs aligned with any new workflow files added in this checkpoint.
 - Continue updating the checkpoint files and rules file for each user-directed change from this point forward.
 - Keep startup instructions in `AGENTS.md` minimal and load-bearing so they stay useful instead of bloated.
@@ -42,3 +46,4 @@ Last updated: 2026-03-17
 - Raw GitHub one-liners only work after the corresponding scripts are pushed to the branch referenced by the URL.
 - Windows bootstrap and uninstall scripts were reviewed, but PowerShell execution was not validated in this macOS workspace.
 - A full packaged desktop build has not yet been executed from this workspace. `cargo check` passed, but installer generation still needs native platform validation.
+- Icon asset generation needs to preserve all bundle formats used by Tauri: PNG sizes, `icon.ico`, and `icon.icns`.

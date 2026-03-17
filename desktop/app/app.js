@@ -5,6 +5,7 @@ const state = {
   settings: {
     serverUrl: "http://127.0.0.1:8080",
     hasSavedSession: false,
+    theme: "dark",
   },
 };
 
@@ -27,6 +28,8 @@ const els = {
   refreshButton: document.getElementById("refreshButton"),
   logoutButton: document.getElementById("logoutButton"),
   postButton: document.getElementById("postButton"),
+  themeToggle: document.getElementById("themeToggle"),
+  themeValue: document.getElementById("themeValue"),
 };
 
 function setBanner(message, type = "success") {
@@ -41,6 +44,18 @@ function setBanner(message, type = "success") {
 
 function setBusy(button, busy) {
   button.disabled = busy;
+}
+
+function normalizeTheme(theme) {
+  return theme === "light" ? "light" : "dark";
+}
+
+function applyTheme(theme) {
+  const normalized = normalizeTheme(theme);
+  document.documentElement.dataset.theme = normalized;
+  els.themeToggle.checked = normalized === "dark";
+  els.themeValue.textContent = normalized === "dark" ? "Dark" : "Light";
+  state.settings.theme = normalized;
 }
 
 function renderSession() {
@@ -58,6 +73,7 @@ function renderSession() {
   }
 
   els.serverUrl.value = state.settings.serverUrl || "http://127.0.0.1:8080";
+  applyTheme(state.settings.theme);
 }
 
 function renderMessages(messages) {
@@ -96,6 +112,7 @@ function escapeHtml(value) {
 async function loadSettings() {
   const response = await invoke("load_settings");
   state.settings = response;
+  applyTheme(response.theme);
   renderSession();
 }
 
@@ -103,6 +120,7 @@ async function saveServerUrl() {
   const serverUrl = els.serverUrl.value.trim();
   const response = await invoke("save_server_url", { serverUrl });
   state.settings = response;
+  applyTheme(response.theme);
   state.session = {
     authenticated: false,
     serverUrl: response.serverUrl,
@@ -111,6 +129,14 @@ async function saveServerUrl() {
   renderSession();
   renderMessages([]);
   setBanner("Saved server URL. Sign in again against that server.", "success");
+}
+
+async function saveTheme(theme) {
+  const response = await invoke("save_theme", { theme });
+  state.settings = response;
+  applyTheme(response.theme);
+  renderSession();
+  setBanner(`Saved ${response.theme} theme preference.`, "success");
 }
 
 async function resumeSession() {
@@ -193,6 +219,8 @@ async function logout() {
 }
 
 async function bootstrap() {
+  applyTheme(state.settings.theme);
+
   if (!invoke) {
     setBanner(
       "The Tauri API is unavailable. Start this UI through `cargo tauri dev` or a packaged build.",
@@ -228,6 +256,18 @@ els.resumeButton.addEventListener("click", async () => {
   try {
     await resumeSession();
   } catch (error) {
+    setBanner(String(error), "error");
+  }
+});
+
+els.themeToggle.addEventListener("change", async () => {
+  const previousTheme = state.settings.theme || "dark";
+  const nextTheme = els.themeToggle.checked ? "dark" : "light";
+  applyTheme(nextTheme);
+  try {
+    await saveTheme(nextTheme);
+  } catch (error) {
+    applyTheme(previousTheme);
     setBanner(String(error), "error");
   }
 });
