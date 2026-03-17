@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Yap</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Self-hosted desktop chatter</p>
+        <h1>Team Yap</h1>
+        <p class="hero-copy">
+          A compact private team message board with local desktop settings and a
+          small FastAPI server behind it.
+        </p>
+      </section>
+
+      <section id="statusBanner" class="status-banner hidden"></section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Connection</p>
+            <h2>Server</h2>
+          </div>
+          <div id="sessionMeta" class="session-meta hidden"></div>
+        </div>
+
+        <form id="connectionForm" class="stack">
+          <label class="field">
+            <span>Server URL</span>
+            <input
+              id="serverUrl"
+              name="serverUrl"
+              type="url"
+              placeholder="http://127.0.0.1:8080"
+              required
+            />
+          </label>
+
+          <div class="actions">
+            <button id="saveServerButton" type="button" class="secondary">
+              Save server URL
+            </button>
+            <button id="resumeButton" type="button" class="ghost">Resume session</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="loginPanel" class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Sign in</p>
+            <h2>Desktop access</h2>
+          </div>
+        </div>
+
+        <form id="loginForm" class="stack">
+          <label class="field">
+            <span>Username</span>
+            <input id="username" name="username" type="text" autocomplete="username" required />
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+
+          <button id="loginButton" type="submit">Sign in</button>
+        </form>
+      </section>
+
+      <section id="messagesPanel" class="panel hidden">
+        <div class="panel-header">
+          <div>
+            <p class="section-kicker">Messages</p>
+            <h2>Team feed</h2>
+          </div>
+
+          <div class="actions">
+            <button id="refreshButton" type="button" class="secondary">Refresh</button>
+            <button id="logoutButton" type="button" class="ghost">Log out</button>
+          </div>
+        </div>
+
+        <form id="messageForm" class="stack">
+          <label class="field">
+            <span>Say something</span>
+            <textarea
+              id="messageBody"
+              name="messageBody"
+              rows="4"
+              maxlength="1000"
+              placeholder="Share a quick status, a blocker, or a handoff."
+              required
+            ></textarea>
+          </label>
+
+          <button id="postButton" type="submit">Post message</button>
+        </form>
+
+        <div class="feed-header">
+          <p class="section-kicker">Latest 100</p>
+        </div>
+        <div id="messageList" class="message-list"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
+

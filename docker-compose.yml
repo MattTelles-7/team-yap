@@ -1,0 +1,15 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: team-yap-server
+    env_file:
+      - .env
+    environment:
+      TEAM_YAP_PORT: 8080
+    ports:
+      - "${TEAM_YAP_PORT:-8080}:8080"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

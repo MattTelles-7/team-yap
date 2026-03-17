@@ -1,0 +1,12 @@
+[default]
+description = "Default permissions for Team Yap desktop commands."
+permissions = [
+  "allow-load-settings",
+  "allow-save-server-url",
+  "allow-login",
+  "allow-resume-session",
+  "allow-list-messages",
+  "allow-post-message",
+  "allow-logout",
+]
+
