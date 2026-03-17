@@ -13,6 +13,9 @@ The current build is intentionally narrow: users sign in from the desktop app, r
 
 ```text
 .
+├── agents/
+│   └── THREAD_CONTEXT_AUDITOR.md
+├── AGENTS.md
 ├── backend/
 │   ├── Dockerfile
 │   ├── requirements.txt
@@ -37,13 +40,18 @@ The current build is intentionally narrow: users sign in from the desktop app, r
 │       ├── Cargo.toml
 │       └── tauri.conf.json
 ├── docs/
+│   ├── CHECKPOINT_HISTORY.md
 │   ├── DEPLOY_PROXMOX.md
 │   ├── INSTALL_DESKTOP.md
-│   └── OPERATIONS.md
+│   ├── OPERATIONS.md
+│   └── PROGRESS.md
 ├── scripts/
 │   ├── bootstrap-client-macos.sh
 │   ├── bootstrap-client-windows.ps1
-│   └── bootstrap-server-debian.sh
+│   ├── bootstrap-server-debian.sh
+│   ├── uninstall-client-macos.sh
+│   ├── uninstall-client-windows.ps1
+│   └── uninstall-server-debian.sh
 ├── .env.example
 └── docker-compose.yml
 ```
@@ -77,6 +85,11 @@ That command:
 
 If you do not pass `TEAM_YAP_ADMIN_PASSWORD`, the script generates one and prints it at the end.
 
+Important:
+
+- the raw GitHub one-liners only reflect the contents already pushed to `main`
+- if you changed a bootstrap or uninstall script locally but have not pushed it yet, run the local script path from your checkout instead of the raw GitHub URL
+
 Fastest macOS client bootstrap against a remote server:
 
 ```bash
@@ -97,6 +110,18 @@ The desktop bootstrap commands:
 - launch the desktop app with `cargo tauri dev`
 
 They are the fastest source-based startup path. For packaged installers and manual build steps, use the desktop guide below.
+
+Uninstall one-liners are documented in:
+
+- [`docs/INSTALL_DESKTOP.md`](docs/INSTALL_DESKTOP.md) for macOS and Windows
+- [`docs/DEPLOY_PROXMOX.md`](docs/DEPLOY_PROXMOX.md) for the Debian server
+
+Repo supervision files are in:
+
+- [`AGENTS.md`](AGENTS.md) for standing orders
+- [`docs/PROGRESS.md`](docs/PROGRESS.md) for the current restart checkpoint
+- [`docs/CHECKPOINT_HISTORY.md`](docs/CHECKPOINT_HISTORY.md) for milestone history
+- [`agents/THREAD_CONTEXT_AUDITOR.md`](agents/THREAD_CONTEXT_AUDITOR.md) for the subagent audit prompt
 
 ## Local Development Quick Start
 

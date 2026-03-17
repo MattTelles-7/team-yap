@@ -21,6 +21,11 @@ They:
 - write the desktop `settings.json` with the server URL you choose
 - launch the app with `cargo tauri dev`
 
+Important:
+
+- these raw GitHub commands only work for files that already exist on the pushed `main` branch
+- if you changed a bootstrap script locally but have not pushed it yet, run the matching local script from your checkout instead
+
 ### macOS One-Liner
 
 Paste this into Terminal:
@@ -45,6 +50,13 @@ If your server is local instead of remote, use:
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-macos.sh)"
 ```
 
+Local checkout fallback if the raw GitHub URL is missing or stale:
+
+```bash
+cd /path/to/team-yap
+TEAM_YAP_SERVER_URL="https://yap.example.com" bash scripts/bootstrap-client-macos.sh
+```
+
 ### Windows One-Liner
 
 Paste this into PowerShell:
@@ -64,11 +76,45 @@ If your server is local instead of remote, use:
 powershell -ExecutionPolicy Bypass -NoProfile -Command "irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-client-windows.ps1 | iex"
 ```
 
+Local checkout fallback if the raw GitHub URL is missing or stale:
+
+```powershell
+Set-Location C:\path\to\team-yap
+$env:TEAM_YAP_SERVER_URL = 'https://yap.example.com'
+powershell -ExecutionPolicy Bypass -NoProfile -File .\scripts\bootstrap-client-windows.ps1
+```
+
 Important Windows caveats:
 
 - the first run installs Rust, WebView2, and Visual Studio Build Tools if they are missing
 - Visual Studio Build Tools installation can take several minutes
 - you may see UAC prompts during the bootstrap
+
+## One-Line Client Uninstall
+
+These commands are intentionally destructive.
+
+They remove:
+
+- the bootstrap checkout in `~/team-yap-client` or `%USERPROFILE%\team-yap-client`
+- the desktop settings file
+- Rust toolchains installed through rustup for that user
+- the Tauri CLI installed through cargo
+- on Windows, the Visual Studio Build Tools and WebView2 runtime installed by the bootstrap script
+
+Use them only on a machine where those dependencies were installed specifically for Team Yap.
+
+### macOS Uninstall One-Liner
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/uninstall-client-macos.sh)"
+```
+
+### Windows Uninstall One-Liner
+
+```powershell
+powershell -ExecutionPolicy Bypass -NoProfile -Command "irm https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/uninstall-client-windows.ps1 | iex"
+```
 
 ## What The Desktop App Does
 
@@ -363,6 +409,19 @@ Important behavior:
 
 ## Common Errors And Fixes
 
+### `curl: (56) The requested URL returned error: 404`
+
+Cause:
+
+- the raw GitHub bootstrap URL points to a script that is not present on the pushed `main` branch yet
+- the GitHub owner, repo, or branch name in the URL is wrong
+
+Fix:
+
+1. Push the current script to the branch used by the raw GitHub URL.
+2. Or run the bootstrap locally from a checked-out repo copy instead of the raw GitHub URL.
+3. Retry the same bootstrap command after the URL is valid.
+
 ### `The Tauri API is unavailable`
 
 Cause:
@@ -373,6 +432,18 @@ Fix:
 
 - use `cargo tauri dev` for development
 - or install the packaged desktop app
+
+### `failed to resolve ACL: SetPermissionNotFound { permission: "allow-load-settings", set: "default" }`
+
+Cause:
+
+- the desktop checkout has an older Tauri permission file format in `desktop/src-tauri/permissions/default.toml`
+
+Fix:
+
+1. Update the repo so `desktop/src-tauri/permissions/default.toml` uses `[[permission]]` with `commands.allow`.
+2. If you used the bootstrap workdir, rerun the same bootstrap command after the repo update so `~/team-yap-client` or `%USERPROFILE%\team-yap-client` gets refreshed.
+3. Start the app again with `cargo tauri dev`.
 
 ### `Could not reach the server`
 

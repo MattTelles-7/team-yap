@@ -21,6 +21,11 @@ That command:
 - starts the Team Yap server
 - prints the health URL and the initial admin password if it had to generate one
 
+Important:
+
+- the raw GitHub one-liner only reflects the contents already pushed to `main`
+- if you changed the bootstrap or uninstall scripts locally but have not pushed them yet, run the local script from your checkout instead of the raw GitHub URL
+
 Optional custom admin password example:
 
 ```bash
@@ -31,6 +36,24 @@ Optional custom published port example:
 
 ```bash
 sudo TEAM_YAP_PORT='8090' bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/bootstrap-server-debian.sh)"
+```
+
+## One-Line Debian Uninstall
+
+This command is intentionally destructive.
+
+It removes:
+
+- `/opt/team-yap`
+- Team Yap data and backups under that directory
+- Docker containers, images, and runtime data under `/var/lib/docker` and `/var/lib/containerd`
+- the Docker packages installed by the Team Yap bootstrap
+- `git` and `sqlite3` if they were installed only for this deployment
+
+Use it only on a Debian VM that was dedicated to Team Yap.
+
+```bash
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/MattTelles-7/team-yap/main/scripts/uninstall-server-debian.sh)"
 ```
 
 ## Recommended Deployment Target
