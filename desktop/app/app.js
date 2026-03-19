@@ -29,7 +29,10 @@ const els = {
   logoutButton: document.getElementById("logoutButton"),
   postButton: document.getElementById("postButton"),
   themeToggle: document.getElementById("themeToggle"),
+<<<<<<< Updated upstream
   themeValue: document.getElementById("themeValue"),
+=======
+>>>>>>> Stashed changes
 };
 
 function setBanner(message, type = "success") {
@@ -54,7 +57,10 @@ function applyTheme(theme) {
   const normalized = normalizeTheme(theme);
   document.documentElement.dataset.theme = normalized;
   els.themeToggle.checked = normalized === "dark";
+<<<<<<< Updated upstream
   els.themeValue.textContent = normalized === "dark" ? "Dark" : "Light";
+=======
+>>>>>>> Stashed changes
   state.settings.theme = normalized;
 }
 
@@ -136,7 +142,10 @@ async function saveTheme(theme) {
   state.settings = response;
   applyTheme(response.theme);
   renderSession();
+<<<<<<< Updated upstream
   setBanner(`Saved ${response.theme} theme preference.`, "success");
+=======
+>>>>>>> Stashed changes
 }
 
 async function resumeSession() {
