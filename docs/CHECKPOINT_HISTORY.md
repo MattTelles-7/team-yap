@@ -94,3 +94,23 @@ Open risk at that point:
 
 - Raw GitHub one-liners still depend on the pushed branch contents.
 - Windows PowerShell runtime validation and full packaged installer builds are still pending on native target machines.
+
+## 2026-03-17 Checkpoint 6
+
+Summary:
+
+- Refined the desktop appearance work so the compact theme toggle remains in the dedicated Appearance settings strip instead of bleeding into sign-in UI.
+- Pulled the page styling back toward the original warm Team Yap visual language while keeping dark mode as the default palette.
+- Rebuilt the desktop icon set from `scripts/generate_desktop_icons.py` so the liquid-glass experiment is limited to the dock/taskbar icon assets rather than the full app UI.
+- Completed a parallel audit of the broken admin login report and confirmed the most likely causes are Tauri command-permission/runtime drift plus weak observability, not an admin-only backend auth rule.
+
+Validation:
+
+- `python3 -m py_compile backend/team_yap/*.py scripts/generate_desktop_icons.py`
+- `python3 scripts/generate_desktop_icons.py`
+- manual inspection of regenerated desktop icon assets
+
+Open risk at that point:
+
+- `cargo` is not available in this workspace right now, so the current desktop asset/UI pass was not revalidated with a fresh `cargo check` or packaged app launch in this turn.
+- The admin login, protocol normalization, and end-to-end logging fixes identified in the audit still need implementation and runtime validation.
